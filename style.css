@@ -1,3 +1,72 @@
 #root {
   color: red;
 }
+body{
+  background-color: #f0f0f0;
+}
+
+/* using box sizing property for all the elements 
+so that padding does does not affect the width percentage*/
+*{
+  box-sizing: border-box;
+}
+
+.episodes-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  /* Takes the following width of the parent */
+  width: 85%; 
+  margin: 20px 20px 20px 40px;
+}
+
+.episode-card {
+  background-color: white;
+  /* Keep your fixed dimensions */
+  width: 320px;
+  height: 500px;
+  border: 2px solid rgba(0, 0, 0, 0.106);
+  text-align: center;
+  border-radius: 10px;
+}
+
+.episode-summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 7; /* Number of lines to show */
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+  padding: 5px;
+}
+.episode-title-number { 
+  width: 100%; /* Change from 320px to 100% to fill the card */
+/* Set font size */
+  font-size: 20px; 
+  
+  /* Set line-height (usually 1.2 to 1.5 times the font size) */
+  line-height: 1.2; 
+  
+  /* Height = font-size * line-height * number of lines */
+  height: calc(20px * 1.2 * 3);
+
+  border: 3px solid rgba(0, 0, 0, 0.376);
+  border-radius: 10px;
+  padding: 5px;
+  margin: 0px 0px 15px 0px;
+
+  display: flex;
+  align-items: center;    /* Centers vertically */
+  justify-content: center; /* Centers horizontally */
+}
+.episode-link{
+
+  margin-top: auto; /* This pushes the link to the very bottom of the card */
+  text-align: center; /* Centers the text horizontally */
+  /* Optional styling to make it look like a button */
+  display: block; 
+  padding: 10px;
+  text-decoration: none;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}

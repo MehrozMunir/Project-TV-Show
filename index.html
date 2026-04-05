@@ -11,11 +11,21 @@
   <body>
     <div id="root">
     </div>
-
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
-    <script src="episodes.js"></script>
+    <script src="episodes.js" defer></script>
 
     <!-- Loads YOUR javascript code -->
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
+
+  <section class="episodes-grid-container"> 
+  <template id="episode-card-template">
+  <section class="episode-card">
+    <h3 class="episode-title-number">Episode title and number</h3>
+    <img alt="thumbnail of episode"/>
+    <p class="episode-summary">summary of episode</p>
+    <a class="episode-link"></a>
+  </section>
+</template>
+  </section>
   </body>
 </html>
