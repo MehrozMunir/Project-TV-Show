@@ -3,6 +3,7 @@
 }
 body{
   background-color: #f0f0f0;
+  margin: 0;
 }
 
 /* using box sizing property for all the elements 
@@ -16,28 +17,31 @@ so that padding does does not affect the width percentage*/
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   /* Takes the following width of the parent */
-  width: 85%; 
-  margin: 20px 20px 20px 40px;
+  width: 100%; 
+  margin: 20px auto;
+  justify-content: center;
+  box-sizing: border-box;
+  max-width: 1100px;
+  padding: 0 10px;
 }
 
 .episode-card {
   background-color: white;
   /* Keep your fixed dimensions */
   width: 320px;
-  height: 500px;
   border: 2px solid rgba(0, 0, 0, 0.106);
   text-align: center;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .episode-summary {
-  display: -webkit-box;
-  -webkit-line-clamp: 7; /* Number of lines to show */
-  -webkit-box-orient: vertical;  
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex-grow: 1;
   font-size: 16px;
   padding: 5px;
+  overflow: visible;
+  word-break: break-word;
 }
 .episode-title-number { 
   width: 100%; /* Change from 320px to 100% to fill the card */
@@ -69,4 +73,10 @@ so that padding does does not affect the width percentage*/
   text-decoration: none;
   background-color: #f0f0f0;
   border-radius: 5px;
+}
+.episode-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
 }

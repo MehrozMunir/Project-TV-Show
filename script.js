@@ -28,8 +28,8 @@ function makePageForEpisodes(episodeList) {
       "E" +
       episode.number.toString().padStart(2, "0");
     titleHeader.textContent = episodeCode;
-    episodeImage.src = episode.image.medium;
-    episodeSummary.innerHTML = episode.summary;
+    episodeImage.src = episode.image?.medium || "";
+    episodeSummary.innerHTML = episode.summary || "";
     episodeLink.href = episode.url;
     episodeLink.textContent =
       "Click here to visit the original source of this episode at TVMaze.com";
