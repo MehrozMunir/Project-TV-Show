@@ -1,5 +1,6 @@
 //You can edit ALL of the code here
 let allEpisodes = [];
+let template;
 function setup() {
   const rootElem = document.getElementById("root");
 
@@ -10,6 +11,10 @@ function setup() {
 
   rootElem.prepend(counter);
   rootElem.prepend(searchInput);
+
+  template = document.getElementById("episode-card-template");
+
+  console.log("template:", template);
 
   allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
@@ -38,11 +43,10 @@ function makePageForEpisodes(episodeList) {
   const episodesGridContainer = document.querySelector(
     ".episodes-grid-container",
   );
-
+  console.log("container:", episodesGridContainer);
+  episodesGridContainer.innerHTML = "";
   episodeList.forEach((episode) => {
-    const episodeTemplate = document
-      .getElementById("episode-card-template")
-      .content.cloneNode(true);
+    const episodeTemplate = template.content.cloneNode(true);
     const titleHeader = episodeTemplate.querySelector("h3");
     const episodeImage = episodeTemplate.querySelector("img");
     const episodeSummary = episodeTemplate.querySelector("p");
@@ -59,7 +63,7 @@ function makePageForEpisodes(episodeList) {
     episodeLink.href = episode.url;
     episodeLink.textContent =
       "Click here to visit the original source of this episode at TVMaze.com";
-    //hi
+
     episodesGridContainer.appendChild(episodeTemplate);
   });
 }
