@@ -4,20 +4,25 @@ let template;
 function setup() {
   const rootElem = document.getElementById("root");
 
+  const controls = document.createElement("div");
+  controls.classList.add("search_bar");
+
   const searchInput = document.createElement("input");
   searchInput.placeholder = "Search episodes...";
 
-  const counter = document.createElement("p");
+  const counter = document.createElement("span");
 
-  rootElem.prepend(counter);
-  rootElem.prepend(searchInput);
+  controls.appendChild(searchInput);
+  controls.appendChild(counter);
+  rootElem.prepend(controls);
 
   template = document.getElementById("episode-card-template");
 
   console.log("template:", template);
-
   allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+
+  counter.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episodes`;
+  renderEpisodes(allEpisodes);
 
   searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase();
@@ -32,19 +37,21 @@ function setup() {
       return nameMatch || summaryMatch;
     });
 
-    makePageForEpisodes(filteredEpisodes);
+    renderEpisodes(filteredEpisodes);
 
     counter.textContent = `${filteredEpisodes.length} / ${allEpisodes.length} episodes`;
   });
 }
 
-function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
+function renderEpisodes(episodeList) {
   const episodesGridContainer = document.querySelector(
     ".episodes-grid-container",
   );
+
   console.log("container:", episodesGridContainer);
+
   episodesGridContainer.innerHTML = "";
+
   episodeList.forEach((episode) => {
     const episodeTemplate = template.content.cloneNode(true);
     const titleHeader = episodeTemplate.querySelector("h3");

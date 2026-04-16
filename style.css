@@ -1,5 +1,6 @@
 #root {
-  color: red;
+  color: rgb(0, 0, 0);
+  font-family: Arial, Helvetica, sans-serif;
 }
 body{
   background-color: #f0f0f0;
@@ -79,4 +80,20 @@ so that padding does does not affect the width percentage*/
   height: 180px;
   object-fit: cover;
   border-radius: 10px;
+}
+.search_bar {
+  display: flex;            
+  align-items: center;     
+  gap: 15px;               
+  margin: 10px 0px 20px 60px;
+}
+.search_bar span {
+  font-size: medium;
+}
+.search_bar input {
+  padding: 14px 18px;   
+  font-size: 18px;    
+  width: 300px;         
+  border: 2px solid #ccc;
+  border-radius: 6px;
 }
