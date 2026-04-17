@@ -86,7 +86,7 @@ so that padding does does not affect the width percentage*/
   display: flex;            
   align-items: center;     
   gap: 15px;               
-  margin: 10px 0px 20px 220px;
+  margin: 10px 0px 20px 220px; 
 }
 .search_bar span {
   font-size: medium;
@@ -97,4 +97,14 @@ so that padding does does not affect the width percentage*/
   width: 300px;         
   border: 2px solid #ccc;
   border-radius: 6px;
+}
+.search_bar select {
+  padding: 14px 18px;
+  font-size: 18px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  color: #555;
+  margin: 80px;
 }
