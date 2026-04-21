@@ -1,10 +1,42 @@
-//You can edit ALL of the code here
+// Global variables
 let allEpisodes = [];
 let template;
 let showOnlySelected = false;
+const rootElem = document.getElementById("root");
 
-function setup() {
-  const rootElem = document.getElementById("root");
+// 1. DATA FETCHING - Handles Loading and Error states
+async function getAllEpisodes() {
+  // Show loading state immediately
+  rootElem.innerHTML =
+    "<p class='loading-state'>Loading episodes, please wait...</p>";
+
+  try {
+    const response = await fetch("https://api.tvmaze.com/shows/82/episodes");
+
+    if (!response.ok) {
+      throw new Error(
+        `Server error: ${response.status} (${response.statusText})`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    // If an error happens, this replaces the "Loading" text and STOPS the app
+    rootElem.innerHTML = `
+      <div class="error-notice">
+        <h1 style="color: #d9534f;">Oops! Something went wrong.</h1>
+        <p>We couldn't load the episodes. Details: <strong>${error.message}</strong></p>
+        <button onclick="location.reload()">Try Again</button>
+      </div>
+    `;
+    return null; // Return null so setup() knows not to call setup2
+  }
+}
+
+// 2. UI INITIALIZATION - Only runs if data is successful
+function uiInitialization() {
+  // CRITICAL: Clear the loading message before building the UI
+  rootElem.innerHTML = "";
 
   const controls = document.createElement("div");
   controls.classList.add("search_bar");
@@ -13,106 +45,98 @@ function setup() {
   searchInput.placeholder = "Search episodes...";
 
   const counter = document.createElement("span");
-
-  controls.appendChild(searchInput);
-  controls.appendChild(counter);
-  rootElem.prepend(controls);
-
   const episodeSelect = document.createElement("select");
   const defaultOption = document.createElement("option");
+
   defaultOption.textContent = "Jump to episode...";
   defaultOption.value = "";
   episodeSelect.appendChild(defaultOption);
 
+  controls.appendChild(searchInput);
+  controls.appendChild(counter);
   controls.appendChild(episodeSelect);
+
+  // Add controls to root
+  rootElem.appendChild(controls);
+
+  // Create and add the grid container to root
+  const episodesGridContainer = document.createElement("div");
+  episodesGridContainer.classList.add("episodes-grid-container");
+  rootElem.appendChild(episodesGridContainer);
 
   template = document.getElementById("episode-card-template");
 
-  console.log("template:", template);
-  allEpisodes = getAllEpisodes();
-
   counter.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episodes`;
-  renderEpisodes(allEpisodes);
+
+  // Populate Select Menu
   allEpisodes.forEach((episode, index) => {
     const option = document.createElement("option");
-
-    const episodeCode =
-      `S${episode.season.toString().padStart(2, "0")}` +
-      `E${episode.number.toString().padStart(2, "0")}`;
-
+    const episodeCode = `S${episode.season.toString().padStart(2, "0")}E${episode.number.toString().padStart(2, "0")}`;
     option.value = index;
     option.textContent = `${episodeCode} - ${episode.name}`;
-
     episodeSelect.appendChild(option);
   });
 
+  // --- Event Listeners ---
   searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase();
-
-    const filteredEpisodes = allEpisodes.filter((episode) => {
-      const nameMatch = episode.name.toLowerCase().includes(query);
-
-      const summaryMatch = episode.summary
-        ? episode.summary.toLowerCase().includes(query)
-        : false;
-      return nameMatch || summaryMatch;
-    });
-
-    renderEpisodes(filteredEpisodes);
-
-    counter.textContent = `${filteredEpisodes.length} / ${allEpisodes.length} episodes`;
-    episodeSelect.value = "";
-    showOnlySelected = false;
+    const filtered = allEpisodes.filter(
+      (ep) =>
+        ep.name.toLowerCase().includes(query) ||
+        (ep.summary && ep.summary.toLowerCase().includes(query)),
+    );
+    renderEpisodes(filtered);
+    counter.textContent = `${filtered.length} / ${allEpisodes.length} episodes`;
   });
 
   episodeSelect.addEventListener("change", (e) => {
     const selectedIndex = e.target.value;
-
     if (selectedIndex === "") {
-      showOnlySelected = false;
       renderEpisodes(allEpisodes);
       counter.textContent = `${allEpisodes.length} / ${allEpisodes.length} episodes`;
-      return;
+    } else {
+      renderEpisodes([allEpisodes[selectedIndex]]);
+      counter.textContent = `1 / ${allEpisodes.length} episodes`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    const selectedEpisode = allEpisodes[selectedIndex];
-    showOnlySelected = true;
-    renderEpisodes([selectedEpisode]);
-
-    counter.textContent = `1 / ${allEpisodes.length} episodes`;
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 }
 
+// 3. EPISODE RENDERER
 function renderEpisodes(episodeList) {
-  const episodesGridContainer = document.querySelector(
-    ".episodes-grid-container",
-  );
+  const container = document.querySelector(".episodes-grid-container");
+  if (!container) return;
 
-  console.log("container:", episodesGridContainer);
-
-  episodesGridContainer.innerHTML = "";
+  container.innerHTML = "";
 
   episodeList.forEach((episode) => {
     const episodeTemplate = template.content.cloneNode(true);
-    const titleHeader = episodeTemplate.querySelector("h3");
-    const episodeImage = episodeTemplate.querySelector("img");
-    const episodeSummary = episodeTemplate.querySelector("p");
-    const episodeLink = episodeTemplate.querySelector("a");
-    const episodeCode =
-      episode.name +
-      " - S" +
-      episode.season.toString().padStart(2, "0") +
-      "E" +
-      episode.number.toString().padStart(2, "0");
-    titleHeader.textContent = episodeCode;
-    episodeImage.src = episode.image?.medium || "";
-    episodeSummary.innerHTML = episode.summary || "";
-    episodeLink.href = episode.url;
-    episodeLink.textContent =
-      "Click here to visit the original source of this episode at TVMaze.com";
 
-    episodesGridContainer.appendChild(episodeTemplate);
+    const episodeCode = `S${episode.season.toString().padStart(2, "0")}E${episode.number.toString().padStart(2, "0")}`;
+
+    episodeTemplate.querySelector("h3").textContent =
+      `${episode.name} - ${episodeCode}`;
+    episodeTemplate.querySelector("img").src = episode.image?.medium || "";
+    episodeTemplate.querySelector("p").innerHTML =
+      episode.summary || "No summary available.";
+
+    const link = episodeTemplate.querySelector("a");
+    link.href = episode.url;
+    link.textContent = "View on TVMaze";
+
+    container.appendChild(episodeTemplate);
+  });
+}
+
+// 4. MAIN ENTRY POINT
+function setup() {
+  getAllEpisodes().then((films) => {
+    // Only proceed if films is not null (meaning fetch was successful)
+    if (films) {
+      allEpisodes = films;
+      uiInitialization();
+      renderEpisodes(allEpisodes);
+    }
   });
 }
 
