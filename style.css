@@ -1,6 +1,7 @@
 #root {
   color: rgb(0, 0, 0);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0 auto;
 }
 body{
   background-color: #f0f0f0;
@@ -85,8 +86,10 @@ so that padding does does not affect the width percentage*/
 .search_bar {
   display: flex;            
   align-items: center;     
-  gap: 15px;               
-  margin: 10px 0px 20px 220px; 
+  gap: 15px;        
+  justify-content: center;       
+  margin: 20px auto;
+  flex-wrap: wrap;
 }
 .search_bar span {
   font-size: medium;
@@ -106,5 +109,4 @@ so that padding does does not affect the width percentage*/
   background-color: white;
   cursor: pointer;
   color: #555;
-  margin: 80px;
 }
