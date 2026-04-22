@@ -1,17 +1,55 @@
 // Global variables
 let allEpisodes = [];
+let allShows = [];
+let episodeCache = {};
+let selectedShowId = null;
 let template;
-let showOnlySelected = false;
+
 const rootElem = document.getElementById("root");
 
 // 1. DATA FETCHING - Handles Loading and Error states
-async function getAllEpisodes() {
-  // Show loading state immediately
+async function getAllShows() {
+  try {
+    const response = await fetch("https://api.tvmaze.com/shows");
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    const shows = await response.json();
+
+    shows.sort((a, b) =>
+      a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+    );
+
+    return shows;
+  } catch (error) {
+    rootElem.innerHTML = `
+      <div class="error-notice">
+        <h1 style="color: #d9534f;">Oops! Something went wrong.</h1>
+        <p>We couldn't load the shows. Details: <strong>${error.message}</strong></p>
+        <button onclick="location.reload()">Try Again</button>
+      </div>
+    `;
+    return [];
+  }
+}
+
+async function loadEpisodesForShow(showId) {
+  if (episodeCache[showId]) {
+    allEpisodes = episodeCache[showId];
+    uiInitialization();
+    renderEpisodes(allEpisodes);
+    return;
+  }
+
   rootElem.innerHTML =
     "<p class='loading-state'>Loading episodes, please wait...</p>";
 
   try {
-    const response = await fetch("https://api.tvmaze.com/shows/82/episodes");
+    const response = await fetch(
+      `https://api.tvmaze.com/shows/${showId}/episodes`,
+    );
 
     if (!response.ok) {
       throw new Error(
@@ -19,17 +57,21 @@ async function getAllEpisodes() {
       );
     }
 
-    return await response.json();
+    const episodes = await response.json();
+
+    episodeCache[showId] = episodes;
+    allEpisodes = episodes;
+
+    uiInitialization();
+    renderEpisodes(allEpisodes);
   } catch (error) {
-    // If an error happens, this replaces the "Loading" text and STOPS the app
     rootElem.innerHTML = `
       <div class="error-notice">
         <h1 style="color: #d9534f;">Oops! Something went wrong.</h1>
         <p>We couldn't load the episodes. Details: <strong>${error.message}</strong></p>
         <button onclick="location.reload()">Try Again</button>
       </div>
-    `;
-    return null; // Return null so setup() knows not to call setup2
+     `;
   }
 }
 
@@ -41,17 +83,39 @@ function uiInitialization() {
   const controls = document.createElement("div");
   controls.classList.add("search_bar");
 
+  const showSelect = document.createElement("select");
+  const defaultShowOption = document.createElement("option");
+
+  defaultShowOption.textContent = "Select a TV show...";
+  defaultShowOption.value = "";
+  defaultShowOption.disabled = true;
+  defaultShowOption.selected = !selectedShowId;
+
+  showSelect.appendChild(defaultShowOption);
+
   const searchInput = document.createElement("input");
   searchInput.placeholder = "Search episodes...";
 
   const counter = document.createElement("span");
   const episodeSelect = document.createElement("select");
+
   const defaultOption = document.createElement("option");
 
   defaultOption.textContent = "Jump to episode...";
   defaultOption.value = "";
   episodeSelect.appendChild(defaultOption);
 
+  allShows.forEach((show) => {
+    const option = document.createElement("option");
+    option.value = show.id;
+    option.textContent = show.name;
+    showSelect.appendChild(option);
+
+    if (selectedShowId) {
+      showSelect.value = selectedShowId;
+    }
+  });
+  controls.appendChild(showSelect);
   controls.appendChild(searchInput);
   controls.appendChild(counter);
   controls.appendChild(episodeSelect);
@@ -77,7 +141,6 @@ function uiInitialization() {
     episodeSelect.appendChild(option);
   });
 
-  // --- Event Listeners ---
   searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase();
     const filtered = allEpisodes.filter(
@@ -99,6 +162,14 @@ function uiInitialization() {
       counter.textContent = `1 / ${allEpisodes.length} episodes`;
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  });
+
+  showSelect.addEventListener("change", (e) => {
+    const showId = e.target.value;
+
+    if (!showId) return;
+
+    loadEpisodesForShow(showId);
   });
 }
 
@@ -129,15 +200,13 @@ function renderEpisodes(episodeList) {
 }
 
 // 4. MAIN ENTRY POINT
-function setup() {
-  getAllEpisodes().then((films) => {
-    // Only proceed if films is not null (meaning fetch was successful)
-    if (films) {
-      allEpisodes = films;
-      uiInitialization();
-      renderEpisodes(allEpisodes);
-    }
-  });
+async function setup() {
+  allShows = await getAllShows();
+
+  if (allShows.length === 0) return;
+
+  const defaultShow = allShows[0];
+  await loadEpisodesForShow(defaultShow.id);
 }
 
 window.onload = setup;
