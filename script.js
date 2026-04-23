@@ -2,13 +2,10 @@
 let allEpisodes = [];
 let allShows = [];
 let template;
-
 let showSearchInput, showsGridContainer, backToShowsLink, showSelect;
 let showsView, episodesView;
 let showsCounter, showsSelect;
-
 const episodeCache = {};
-
 const rootElem = document.getElementById("root");
 
 async function getAllShows() {
