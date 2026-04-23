@@ -3,105 +3,192 @@
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 auto;
 }
-body{
+
+body {
   background-color: #f0f0f0;
   margin: 0;
 }
 
-/* using box sizing property for all the elements 
-so that padding does does not affect the width percentage*/
-*{
+/* So padding does not increase element width */
+* {
   box-sizing: border-box;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ---------- SHOWS VIEW ---------- */
+
+.shows-view {
+  padding: 10px 0 30px;
+}
+
+.shows-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 10px;
+}
+
+.show-card {
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.106);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.show-image {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.show-content {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.show-title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.show-title a {
+  text-decoration: none;
+  color: #1a4fb3;
+  cursor: pointer;
+}
+
+.show-title a:hover {
+  text-decoration: underline;
+}
+
+.show-content p {
+  margin: 6px 0;
+}
+
+.show-summary {
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* ---------- EPISODES VIEW ---------- */
+
+.episodes-view {
+  padding-bottom: 30px;
 }
 
 .episodes-grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  /* Takes the following width of the parent */
-  width: 100%; 
+  width: 100%;
   margin: 20px auto;
   justify-content: center;
-  box-sizing: border-box;
   max-width: 1100px;
   padding: 0 10px;
 }
 
 .episode-card {
   background-color: white;
-  /* Keep your fixed dimensions */
   width: 320px;
   border: 2px solid rgba(0, 0, 0, 0.106);
   text-align: center;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.episode-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.episode-title-number {
+  width: 100%;
+  font-size: 20px;
+  line-height: 1.2;
+  height: calc(20px * 1.2 * 3);
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 5px;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .episode-summary {
   flex-grow: 1;
   font-size: 16px;
-  padding: 5px;
+  padding: 5px 10px 15px;
   overflow: visible;
   word-break: break-word;
+  line-height: 1.5;
 }
-.episode-title-number { 
-  width: 100%; /* Change from 320px to 100% to fill the card */
-/* Set font size */
-  font-size: 20px; 
-  
-  /* Set line-height (usually 1.2 to 1.5 times the font size) */
-  line-height: 1.2; 
-  
-  /* Height = font-size * line-height * number of lines */
-  height: calc(20px * 1.2 * 3);
 
-  border: 3px solid rgba(0, 0, 0, 0.376);
-  border-radius: 10px;
-  padding: 5px;
-  margin: 0px 0px 15px 0px;
-
-  display: flex;
-  align-items: center;    /* Centers vertically */
-  justify-content: center; /* Centers horizontally */
-}
-.episode-link{
-
-  margin-top: auto; /* This pushes the link to the very bottom of the card */
-  text-align: center; /* Centers the text horizontally */
-  /* Optional styling to make it look like a button */
-  display: block; 
-  padding: 10px;
+.episode-link {
+  margin-top: auto;
+  text-align: center;
+  display: block;
+  padding: 12px;
   text-decoration: none;
   background-color: #f0f0f0;
-  border-radius: 5px;
-}
-.episode-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
+  border-radius: 0 0 8px 8px;
+  color: #1a4fb3;
+  font-weight: bold;
 }
 
-.search_bar {
-  display: flex;            
-  align-items: center;     
-  gap: 15px;        
-  justify-content: center;       
+.episode-link:hover {
+  background-color: #e5e5e5;
+}
+
+/* ---------- TOP MENU / CONTROLS ---------- */
+
+.menu_bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
   margin: 20px auto;
   flex-wrap: wrap;
+  max-width: 1200px;
+  padding: 15px;
+  background-color: rgb(219, 216, 216);
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
-.search_bar span {
-  font-size: medium;
+
+.menu_bar span {
+  font-size: 16px;
+  font-weight: bold;
+  color: #444;
 }
-.search_bar input {
-  padding: 14px 18px;   
-  font-size: 18px;    
-  width: 300px;         
+
+.menu_bar input {
+  padding: 14px 18px;
+  font-size: 18px;
+  width: 300px;
   border: 2px solid #ccc;
   border-radius: 6px;
+  background-color: white;
 }
-.search_bar select {
+
+.menu_bar select {
   padding: 14px 18px;
   font-size: 18px;
   border: 2px solid #ccc;
@@ -109,4 +196,57 @@ so that padding does does not affect the width percentage*/
   background-color: white;
   cursor: pointer;
   color: #555;
+  min-width: 220px;
+}
+
+.back-link {
+  text-decoration: none;
+  color: #1a4fb3;
+  font-weight: bold;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+  background-color: #f4f4f4;
+}
+
+
+@media (max-width: 1024px) {
+  .episodes-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .episode-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .episodes-grid-container {
+    grid-template-columns: 1fr;
+  }
+
+
+  .menu_bar {
+    align-items: stretch;
+  }
+
+  .show-image {
+    height: 320px;
+  }
+}
+
+.menu_bar span {
+  font-size: 16px;
+  color: #444;
+}
+
+.menu_bar span:first-child {
+  font-weight: normal;
+}
+
+.menu_bar span:nth-of-type(2) {
+  font-weight: bold;
 }
